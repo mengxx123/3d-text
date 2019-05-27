@@ -21,7 +21,8 @@ $(function() {
   // Camera Position
   camera.position.y = 100;
   camera.position.z = 100;
-  camera.position.x = 100;
+  camera.position.x = 0;
+  camera.lookAt(0, 0, 0)
 
   var renderer = new THREE.WebGLRenderer();
   renderer.shadowMapEnabled = true;
@@ -29,89 +30,32 @@ $(function() {
   renderer.setClearColor(0x000000);
   renderer.setSize(window.innerWidth, window.innerHeight);
 
-  //Adds FPS stat counter bookmarklet
-  (function() {
-    var script = document.createElement('script');
-    script.onload = function() {
-      var stats = new Stats();
-      document.body.appendChild(stats.dom);
-      requestAnimationFrame(function loop() {
-        stats.update();
-        requestAnimationFrame(loop);
-      });
-    };
-    script.src = '//rawgit.com/mrdoob/stats.js/master/build/stats.min.js';
-    document.head.appendChild(script);
-  })();
-
   //adds lights
   var light = new THREE.HemisphereLight(0xffffbb, 0x080820, 1);
   scene.add(light);
 
-  var displayGui = function() {
-    var gui = new dat.GUI();
-    //Declares all the parameters in our GUI
-    var parameters = {
-      color: '#1861b3',
-      message: '',
-      delete: function() { deleteText() },
-    };
-    var loader = new THREE.FontLoader();
-    var myFont;
+  var loader = new THREE.FontLoader();
     loader.load('fonts/OpenSansBold.json', function(font) {
-      myFont = font;
-      //your gui is not ready until the font comes instantiate it here
-      var myText = textFolder.add(parameters, 'message').name('Text');
-      myText.onChange(function() {
-        //adds text
-        var loader = new THREE.FontLoader();
-        console.log(parameters.message);
-        var textGeo = new THREE.TextGeometry(parameters.message, {
-          font: font,
-          size: 200,
-          height: 50,
-          curveSegments: 12,
-          position: 3,
-          bevelThickness: 2,
-          bevelSize: 5,
-          bevelEnabled: true,
-        });
-
-        var textMaterial = new THREE.MeshPhongMaterial({ color: 0x1861b3 });
-
-        var myText = new THREE.Mesh(textGeo, textMaterial);
-        myText.position.set(100, 100, 100);
-        console.log("this is the meshed text",myText);
-        scene.add(myText);
-
-        //Listens to new value on dat gui color section
-        textColor.onChange(function(
-          value, // onFinishChange
-        ) {
-          console.log(parameters.color);
-          myText.material.color.setHex(value.replace('#', '0x'));
-        });
+      var loader = new THREE.FontLoader();
+      var textGeo = new THREE.TextGeometry('CJH', {
+        font: font,
+        size: 200,
+        height: 50,
+        curveSegments: 12,
+        position: 3,
+        bevelThickness: 2,
+        bevelSize: 5,
+        bevelEnabled: true,
       });
-        console.log("scene when text is included",scene);
-        //last bracket before font loader end
+
+      var textMaterial = new THREE.MeshPhongMaterial({ color: 0x1861b3 });
+
+      var myText = new THREE.Mesh(textGeo, textMaterial);
+      myText.position.set(0, 0, 0);
+      myText.material.color.setHex('0xff0000');
+      console.log("this is the meshed text",myText);
+      scene.add(myText);
     });
-
-    //makes text control folder
-      var textFolder = gui.addFolder("Edit Text");
-      //New Color Control
-      var textColor = textFolder.addColor(parameters, 'color').name('Color').listen();
-
-    //Gui is open when website load
-    gui.open();
-    textFolder.add( parameters, 'delete' ).name("Delete Last Character");
-
-    /*
-    //Adds motion controls
-    var motionFolder = gui.addFolder("Motion Controls");
-    motionFolder.add(parameters,)
-    */
-  };
-  displayGui();
 
     function deleteText(){
         var textArray = scene.children;
